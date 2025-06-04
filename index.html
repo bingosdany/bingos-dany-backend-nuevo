@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bingos Dany</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      background: url("imagen/fondo.png") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+    .logo { width: 350px; margin-bottom: 20px; }
+    .info-box {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .info-box span {
+      display: inline-block;
+      background-color: #ffe600;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      color: #000;
+    }
+    form {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #ffc107;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover { background-color: #ffb300; }
+    .progress-container {
+      background: rgba(255, 255, 255, 0.8);
+      margin-top: 30px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+    }
+    .progress-bar {
+      background: #e0e0e0;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 25px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #4caf50;
+      width: 0%;
+      transition: width 0.5s ease-in-out;
+      color: white;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="imagen/titulo.png" alt="Bingos Dany" class="logo">
+
+  <div class="info-box">
+    <p><strong>Nequi:</strong></p>
+    <span onclick="copiarTexto('3103571291')">3103571291 (Toca para copiar)</span>
+    <p style="margin-top: 10px;"><strong>WhatsApp atención:</strong><br>3207171009</p>
+  </div>
+
+  <form id="formulario" enctype="multipart/form-data">
+    <input type="text" name="nombre" placeholder="Tu nombre" required>
+    <input type="email" name="correo" placeholder="Tu correo" required>
+    <input type="number" name="cantidad" placeholder="Cantidad de cartones" required>
+    <input type="file" name="comprobante" accept="image/*,application/pdf" required>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <div class="progress-container">
+    <p><strong>Progreso de ventas de cartones</strong></p>
+    <div class="progress-bar">
+      <div class="progress-bar-fill" id="barra-progreso">0%</div>
+    </div>
+  </div>
+
+  <script>
+    function copiarTexto(texto) {
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("Número copiado: " + texto);
+      });
+    }
+
+    document.getElementById("formulario").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+
+      fetch("https://bingos-dany-backend-production.up.railway.app/reservar", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert("Formulario enviado correctamente. Recibirás tus cartones cuando se validen.");
+        e.target.reset();
+        actualizarProgreso();
+      })
+      .catch(err => {
+        alert("Error al enviar los datos.");
+        console.error(err);
+      });
+    });
+
+    let vendidos = 0;
+    const total = 100;
+    function actualizarProgreso() {
+      vendidos += 1;
+      if (vendidos > total) vendidos = total;
+      const porcentaje = Math.round((vendidos / total) * 100);
+      const barra = document.getElementById("barra-progreso");
+      barra.style.width = porcentaje + "%";
+      barra.textContent = porcentaje + "%";
+      if (vendidos >= total) {
+        document.querySelector("form button").disabled = true;
+        alert("Ya se alcanzó el límite de cartones vendidos.");
+      }
+    }
+  </script>
+
+</body>
+</html>

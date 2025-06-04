@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración - Bingos Dany</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+    .login { max-width: 300px; margin: auto; text-align: center; }
+    .panel { display: none; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #ffcc00; }
+    button { padding: 5px 10px; margin: 2px; }
+  </style>
+</head>
+<body>
+
+<div class="login">
+  <h2>Acceso al Panel</h2>
+  <input type="password" id="password" placeholder="Contraseña" />
+  <button onclick="login()">Entrar</button>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<div class="panel">
+  <h2>Panel de Administración - Bingos Dany</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Comprobante</th>
+        <th>Asignar Cartones</th>
+      </tr>
+    </thead>
+    <tbody id="userTable">
+      <!-- Los datos vendrán del backend -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const correctPassword = "admin123";
+
+  function login() {
+    const input = document.getElementById("password").value;
+    if (input === correctPassword) {
+      document.querySelector(".login").style.display = "none";
+      document.querySelector(".panel").style.display = "block";
+      fetchUsers();
+    } else {
+      document.getElementById("error").innerText = "Contraseña incorrecta.";
+    }
+  }
+
+  async function fetchUsers() {
+    const res = await fetch('https://bingos-dany-backend.onrender.com/api/users');
+    const users = await res.json();
+    const table = document.getElementById("userTable");
+    table.innerHTML = "";
+    users.forEach(user => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${user.name}</td>
+        <td>${user.email}</td>
+        <td><a href="${user.proof}" target="_blank">Ver</a></td>
+        <td>
+          <button onclick="assign('${user._id}',1)">1</button>
+          <button onclick="assign('${user._id}',2)">2</button>
+          <button onclick="assign('${user._id}',3)">3</button>
+          <button onclick="assign('${user._id}',4)">4</button>
+        </td>
+      `;
+      table.appendChild(row);
+    });
+  }
+
+  async function assign(id, count) {
+    const res = await fetch('https://bingos-dany-backend.onrender.com/api/assign', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ id, count })
+    });
+    if (res.ok) {
+      alert("Cartones asignados y enviados.");
+      fetchUsers();
+    } else {
+      alert("Error al asignar.");
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorteo en Vivo - Bingos Dany</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fdfdfd;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #d10068;
+    }
+    .bola {
+      font-size: 60px;
+      font-weight: bold;
+      color: white;
+      background: #ff007f;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #ff007f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e6006a;
+    }
+    .historial {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bingo Dany - Sorteo en Vivo</h1>
+  <div class="bola" id="bolaActual">?</div>
+  <button onclick="sacarNumero()">Sacar número</button>
+  <div class="historial">
+    <h3>Números salidos:</h3>
+    <p id="numeros">Ninguno</p>
+  </div>
+
+  <script>
+    let numerosSalidos = [];
+    function sacarNumero() {
+      if (numerosSalidos.length >= 75) return alert("Ya salieron todos los números.");
+      let nuevoNumero;
+      do {
+        nuevoNumero = Math.floor(Math.random() * 75) + 1;
+      } while (numerosSalidos.includes(nuevoNumero));
+      numerosSalidos.push(nuevoNumero);
+      document.getElementById("bolaActual").innerText = nuevoNumero;
+      document.getElementById("numeros").innerText = numerosSalidos.join(", ");
+    }
+  </script>
+</body>
+</html>

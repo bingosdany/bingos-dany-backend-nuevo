@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bingos Dany</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-image: url('fondobingo.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      background-color: rgba(0, 0, 0, 0.85);
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      color: white;
+      text-align: center;
+    }
+    .form-container h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .form-container h2 {
+      font-size: 16px;
+      font-weight: normal;
+      margin-bottom: 20px;
+    }
+    .form-container input,
+    .form-container button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    .nequi-btn {
+      background-color: #ff007f;
+      color: white;
+      cursor: pointer;
+    }
+    .submit-btn {
+      background-color: #ff00aa;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .progress-bar {
+      background-color: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress-bar-fill {
+      background-color: #00eaff;
+      height: 20px;
+      width: 0%;
+      text-align: center;
+      color: black;
+      line-height: 20px;
+      font-size: 14px;
+    }
+    .whatsapp {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .whatsapp a {
+      color: #00ffcc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1><span style="color: orange;">Bingos</span> <span style="color: #00ffee;">Dany</span></h1>
+    <h2>Valor del cartón: <strong>$5.000</strong></h2>
+    <button class="nequi-btn" onclick="copiarNequi()">3103571291 - Copiar Nequi</button>
+
+    <form id="formulario">
+      <input type="text" name="nombre" placeholder="Nombre" required />
+      <input type="email" name="correo" placeholder="Correo" required />
+      <input type="number" name="cantidad" placeholder="Cantidad de cartones" min="1" required />
+      <input type="file" name="archivo" required />
+      <button type="submit" class="submit-btn">Enviar comprobante</button>
+    </form>
+
+    <div class="progress-bar">
+      <div id="barra-porcentaje" class="progress-bar-fill">0% vendido</div>
+    </div>
+    <div class="whatsapp">
+      Atención al cliente: <a href="https://wa.me/573207171009" target="_blank">3207171009</a>
+    </div>
+  </div>
+
+  <script>
+    const formulario = document.getElementById("formulario");
+    formulario.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(formulario);
+
+      try {
+        const respuesta = await fetch("https://bingos-dany-backend.onrender.com/enviar", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (respuesta.ok) {
+          alert("Formulario enviado con éxito.");
+          formulario.reset();
+          actualizarBarra();
+        } else {
+          alert("Error al enviar el formulario.");
+        }
+      } catch (error) {
+        alert("Error de conexión con el servidor.");
+      }
+    });
+
+    function copiarNequi() {
+      const numero = "3103571291";
+      navigator.clipboard.writeText(numero);
+      alert("Número de Nequi copiado: " + numero);
+    }
+
+    function actualizarBarra() {
+      fetch("https://bingos-dany-backend.onrender.com/progreso")
+        .then(res => res.json())
+        .then(data => {
+          const barra = document.getElementById("barra-porcentaje");
+          const porcentaje = data.porcentaje + "%";
+          barra.style.width = porcentaje;
+          barra.textContent = porcentaje + " vendido";
+        })
+        .catch(() => {
+          console.log("Error al obtener el porcentaje");
+        });
+    }
+
+    setInterval(actualizarBarra, 5000);
+    actualizarBarra();
+  </script>
+</body>
+</html>

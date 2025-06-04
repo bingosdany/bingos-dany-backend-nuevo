@@ -1,0 +1,46 @@
+<script>
+  async function obtenerReservas() {
+    const response = await fetch('/api/reservas');
+    const reservas = await response.json();
+
+    const tabla = document.querySelector('table');
+
+    reservas.forEach(reserva => {
+      const fila = document.createElement('tr');
+      fila.innerHTML = `
+        <td>${reserva.nombre}</td>
+        <td>${reserva.correo}</td>
+        <td>${new Date(reserva.fecha).toLocaleString()}</td>
+        <td>
+          ${reserva.comprobante
+            ? `<a href="https://bingos-dany-backend-production.up.railway.app/uploads/${reserva.comprobante}" target="_blank">Ver</a>`
+            : 'Sin archivo'}
+        </td>
+        <td>
+          ${reserva.validado
+            ? '<span style="color: green;">Validado</span>'
+            : `<button class="validar-btn" onclick="validarReserva('${reserva._id}')">Validar</button>`}
+        </td>
+      `;
+      tabla.appendChild(fila);
+    });
+  }
+
+  async function validarReserva(id) {
+    const confirmar = confirm('¿Estás seguro de validar esta reserva?');
+    if (!confirmar) return;
+
+    const response = await fetch(`/api/reservas/${id}/validar`, {
+      method: 'PUT',
+    });
+
+    if (response.ok) {
+      alert('Reserva validada correctamente.');
+      location.reload();
+    } else {
+      alert('Hubo un error al validar.');
+    }
+  }
+
+  obtenerReservas();
+</script>
