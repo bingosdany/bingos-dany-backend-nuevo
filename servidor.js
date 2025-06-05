@@ -25,7 +25,15 @@ mongoose.connect(process.env.MONGO_URI, {
 const Reserva = require('./models/Reserva');
 
 // Configuración de subida de archivos (comprobantes)
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname); // Extrae la extensión (.png, .jpg, .pdf, etc.)
+    const nombre = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
+    cb(null, nombre);
+  }
+});
+const upload = multer({ storage });
 
 // Ruta para procesar el formulario
 app.post('/reservar', upload.single('comprobante'), async (req, res) => {
