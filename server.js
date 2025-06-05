@@ -111,8 +111,6 @@ app.post('/validar/:id', async (req, res) => {
 
 
 // Ruta para ver el porcentaje de cartones vendidos
-const progresoRoute = require('./progreso');
-app.use('/', progresoRoute);
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
