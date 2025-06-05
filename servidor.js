@@ -28,7 +28,7 @@ const Reserva = require('./models/Reserva');
 const storage = multer.diskStorage({
   destination: 'uploads/',
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // Extrae la extensión (.png, .jpg, .pdf, etc.)
+    const ext = path.extname(file.originalname); // .png, .jpg, .pdf, etc.
     const nombre = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
     cb(null, nombre);
   }
@@ -61,7 +61,7 @@ app.post('/reservar', upload.single('comprobante'), async (req, res) => {
   }
 });
 
-// Ruta para listar reservas (usada en el panel /admin)
+// Ruta para listar reservas
 app.get('/reservas', async (req, res) => {
   try {
     const reservas = await Reserva.find().sort({ fecha: -1 });
@@ -72,7 +72,7 @@ app.get('/reservas', async (req, res) => {
   }
 });
 
-// 📌 Ruta para validar y enviar cartones por correo
+// Transportador de correos
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -81,10 +81,10 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// Ruta para validar y enviar cartones
 app.post('/validar/:id', async (req, res) => {
   try {
     const reserva = await Reserva.findById(req.params.id);
-
     if (!reserva) return res.status(404).json({ mensaje: 'Reserva no encontrada' });
     if (reserva.validado) return res.status(400).json({ mensaje: 'Reserva ya validada' });
 
@@ -93,7 +93,7 @@ app.post('/validar/:id', async (req, res) => {
         from: `"Bingos Dany" <${process.env.CORREO}>`,
         to: reserva.correo,
         subject: '¡Tus cartones de Bingo!',
-        text: `Hola ${reserva.nombre},\n\nGracias por participar en Bingos Dany. Adjunto encontrarás tus 3 cartones para el sorteo.\n\n¡Buena suerte!`,
+        text: `Hola ${reserva.nombre},\n\nGracias por participar en Bingos Dany. Adjunto encontrarás tus cartones para el sorteo.\n\n¡Mucha suerte!`,
         attachments: [
           {
             filename: nombreArchivo,
@@ -106,20 +106,19 @@ app.post('/validar/:id', async (req, res) => {
         await transporter.sendMail(mailOptions);
         reserva.validado = true;
         await reserva.save();
-
-        res.status(200).json({ mensaje: 'Reserva validada y cartones enviados por correo' });
+        res.status(200).json({ mensaje: '✅ Cartones enviados y reserva validada' });
       } catch (error) {
-        console.error('Error al enviar el correo:', error);
+        console.error('❌ Error al enviar el correo:', error);
         res.status(500).json({ mensaje: 'Error al enviar el correo' });
       }
     });
   } catch (error) {
-    console.error('Error al validar reserva:', error);
+    console.error('❌ Error al validar reserva:', error);
     res.status(500).json({ mensaje: 'Error en el servidor' });
   }
 });
 
-// ✅ Ruta pública para contar reservas totales (usada para la barra de porcentaje)
+// Ruta para contar reservas (barra de progreso)
 app.get('/contador', async (req, res) => {
   try {
     const total = await Reserva.countDocuments();
