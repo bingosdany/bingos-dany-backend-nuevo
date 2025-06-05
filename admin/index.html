@@ -1,46 +1,102 @@
-<script>
-  async function obtenerReservas() {
-    const response = await fetch('/api/reservas');
-    const reservas = await response.json();
-
-    const tabla = document.querySelector('table');
-
-    reservas.forEach(reserva => {
-      const fila = document.createElement('tr');
-      fila.innerHTML = `
-        <td>${reserva.nombre}</td>
-        <td>${reserva.correo}</td>
-        <td>${new Date(reserva.fecha).toLocaleString()}</td>
-        <td>
-          ${reserva.comprobante
-            ? `<a href="https://bingos-dany-backend-production.up.railway.app/uploads/${reserva.comprobante}" target="_blank">Ver</a>`
-            : 'Sin archivo'}
-        </td>
-        <td>
-          ${reserva.validado
-            ? '<span style="color: green;">Validado</span>'
-            : `<button class="validar-btn" onclick="validarReserva('${reserva._id}')">Validar</button>`}
-        </td>
-      `;
-      tabla.appendChild(fila);
-    });
-  }
-
-  async function validarReserva(id) {
-    const confirmar = confirm('¿Estás seguro de validar esta reserva?');
-    if (!confirmar) return;
-
-    const response = await fetch(`/api/reservas/${id}/validar`, {
-      method: 'PUT',
-    });
-
-    if (response.ok) {
-      alert('Reserva validada correctamente.');
-      location.reload();
-    } else {
-      alert('Hubo un error al validar.');
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración - Bingos Dany</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f3f3f3;
     }
-  }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #ffcc00;
+    }
+    button {
+      padding: 5px 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <h1>Panel de Reservas - Bingos Dany</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Fecha</th>
+        <th>Comprobante</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-reservas"></tbody>
+  </table>
 
-  obtenerReservas();
-</script>
+  <script>
+    async function obtenerReservas() {
+      const response = await fetch('https://bingos-dany-backend-nuevo-production.up.railway.app/reservas');
+      const reservas = await response.json();
+
+      const tabla = document.getElementById('tabla-reservas');
+
+      reservas.forEach(reserva => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+          <td>${reserva.nombre}</td>
+          <td>${reserva.correo}</td>
+          <td>${new Date(reserva.fecha).toLocaleString()}</td>
+          <td>
+            ${reserva.comprobante
+              ? `<a href="https://bingos-dany-backend-nuevo-production.up.railway.app/uploads/${reserva.comprobante}" target="_blank">Ver</a>`
+              : 'Sin archivo'}
+          </td>
+          <td>
+            ${reserva.validado
+              ? '<span style="color: green;">Validado</span>'
+              : `<button onclick="validarReserva('${reserva._id}')">Validar</button>`}
+          </td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    async function validarReserva(id) {
+      const confirmar = confirm('¿Estás seguro de validar esta reserva y enviar los cartones?');
+      if (!confirmar) return;
+
+      const response = await fetch(`https://bingos-dany-backend-nuevo-production.up.railway.app/validar/${id}`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        alert('✅ Reserva validada y cartones enviados por correo.');
+        location.reload();
+      } else {
+        alert('❌ Hubo un error al validar.');
+      }
+    }
+
+    obtenerReservas();
+  </script>
+</body>
+</html>

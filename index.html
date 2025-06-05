@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bingos Dany</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,149 +14,237 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       padding: 20px;
     }
-    .logo { width: 350px; margin-bottom: 20px; }
-    .info-box {
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 15px 25px;
-      border-radius: 12px;
+    .logo {
+      width: 300px;
       margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      text-align: center;
     }
-    .info-box span {
-      display: inline-block;
-      background-color: #ffe600;
-      padding: 10px 20px;
+    .info-box {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      color: #333;
+    }
+    .stats {
+      background-color: #fff5cc;
+      padding: 10px;
       border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      color: #000;
+      margin-bottom: 20px;
+      font-size: 16px;
     }
-    form {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 25px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-    button {
-      background-color: #ffc107;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-    }
-    button:hover { background-color: #ffb300; }
     .progress-container {
-      background: rgba(255, 255, 255, 0.8);
-      margin-top: 30px;
       width: 100%;
-      max-width: 400px;
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
+      background-color: #ddd;
+      border-radius: 20px;
+      margin-top: 10px;
+      height: 25px;
+      overflow: hidden;
     }
     .progress-bar {
-      background: #e0e0e0;
-      border-radius: 20px;
-      overflow: hidden;
-      height: 25px;
-      width: 100%;
-      margin-top: 10px;
-    }
-    .progress-bar-fill {
       height: 100%;
-      background: #4caf50;
-      width: 0%;
-      transition: width 0.5s ease-in-out;
+      width: 0;
+      background-color: #28a745;
+      text-align: center;
       color: white;
+      line-height: 25px;
+      transition: width 0.5s ease-in-out;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
       font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      text-align: left;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .nequi-box {
+      background-color: #fceabb;
+      border: 1px solid #e0b000;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    .copy-button {
+      margin-left: 10px;
+      padding: 6px 10px;
+      background-color: #ff9500;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .option-box {
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      background-color: #f9f9f9;
+    }
+    .option-box:hover {
+      border-color: #28a745;
+      background-color: #eaffea;
+    }
+    .option-box.selected {
+      border-color: #28a745;
+      background-color: #d4f8d4;
+    }
+    .option-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .option-desc {
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+    .copy-button:hover {
+      background-color: #e08900;
     }
   </style>
 </head>
 <body>
-
-  <img src="imagen/titulo.png" alt="Bingos Dany" class="logo">
+  <img src="imagen/logo.png" alt="Bingos Dany" class="logo">
 
   <div class="info-box">
-    <p><strong>Nequi:</strong></p>
-    <span onclick="copiarTexto('3103571291')">3103571291 (Toca para copiar)</span>
-    <p style="margin-top: 10px;"><strong>WhatsApp atención:</strong><br>3207171009</p>
+    <div class="stats" id="stats">Cargando información...</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar">0%</div>
+    </div>
+
+    <div class="nequi-box">
+      📱 Número Nequi para pagar: <span id="nequiNumber">3103571291</span>
+      <button class="copy-button" onclick="copiarNequi()">Copiar</button>
+    </div>
+
+    <h1>Formulario de Reserva</h1>
+    <form action="https://bingos-dany-backend-nuevo-production.up.railway.app/reservar" method="POST" enctype="multipart/form-data">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
+
+      <label for="correo">Correo:</label>
+      <input type="email" id="correo" name="correo" required>
+
+      <label>Selecciona tu paquete:</label>
+      <div class="option-box" onclick="selectOption(this, '3 cartones por $6.000')">
+        <div class="option-title">🎫 3 cartones por $6.000</div>
+        <div class="option-desc">👉 Ideal para participar rápido</div>
+      </div>
+      <div class="option-box" onclick="selectOption(this, '7 cartones por $10.000')">
+        <div class="option-title">🎉 7 cartones por $10.000</div>
+        <div class="option-desc">👉 ¡Promoción especial!</div>
+      </div>
+      <input type="hidden" name="tipo" id="tipo" required>
+
+      <label for="comprobante">Comprobante de pago:</label>
+      <input type="file" id="comprobante" name="comprobante" accept="image/*,.pdf" required>
+
+      <button type="submit">Enviar Reserva</button>
+    </form>
+
+    <div id="mensaje" style="margin-top: 15px; font-weight: bold;"></div>
   </div>
 
-  <form id="formulario" enctype="multipart/form-data">
-    <input type="text" name="nombre" placeholder="Tu nombre" required>
-    <input type="email" name="correo" placeholder="Tu correo" required>
-    <input type="number" name="cantidad" placeholder="Cantidad de cartones" required>
-    <input type="file" name="comprobante" accept="image/*,application/pdf" required>
-    <button type="submit">Enviar</button>
-  </form>
-
-  <div class="progress-container">
-    <p><strong>Progreso de ventas de cartones</strong></p>
-    <div class="progress-bar">
-      <div class="progress-bar-fill" id="barra-progreso">0%</div>
-    </div>
+  <div style="margin-top: 40px; text-align: center; background-color: #d1f7d0; border: 2px solid #28a745;
+              padding: 25px; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h2 style="color: #155724; font-size: 24px; margin-bottom: 20px;">📢 Ingresa al grupo para las transmisiones en vivo del bingo</h2>
+    <a href="https://chat.whatsapp.com/FsmDdBx5klX4ey5wxVGOnm" target="_blank"
+       style="background-color: #25D366; color: white; padding: 15px 30px; text-decoration: none; font-size: 18px;
+              border-radius: 10px; display: inline-block; font-weight: bold;">
+      Grupo de WhatsApp
+    </a>
   </div>
 
   <script>
-    function copiarTexto(texto) {
-      navigator.clipboard.writeText(texto).then(() => {
-        alert("Número copiado: " + texto);
-      });
+    function copiarNequi() {
+      const texto = document.getElementById("nequiNumber").innerText;
+      navigator.clipboard.writeText(texto);
+      alert("Número de Nequi copiado: " + texto);
     }
 
-    document.getElementById("formulario").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(e.target);
+    function selectOption(element, value) {
+      document.querySelectorAll('.option-box').forEach(el => el.classList.remove('selected'));
+      element.classList.add('selected');
+      document.getElementById('tipo').value = value;
+    }
 
-      fetch("https://bingos-dany-backend-nuevo-production.up.railway.app/reserva", {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert("Formulario enviado correctamente. Recibirás tus cartones cuando se validen.");
-        e.target.reset();
-        actualizarProgreso();
-      })
-      .catch(err => {
-        alert("Error al enviar los datos.");
-        console.error(err);
-      });
+    const formulario = document.querySelector("form");
+    formulario.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const formData = new FormData(formulario);
+      const mensaje = document.getElementById("mensaje");
+
+      try {
+        const respuesta = await fetch(formulario.action, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!respuesta.ok) throw new Error("Error en la solicitud");
+
+        const data = await respuesta.json();
+
+        mensaje.style.color = "#155724";
+        mensaje.style.backgroundColor = "#d4edda";
+        mensaje.style.border = "1px solid #c3e6cb";
+        mensaje.style.padding = "10px";
+        mensaje.style.borderRadius = "5px";
+        mensaje.innerText = "🎉 ¡Reserva enviada con éxito! Te enviaremos tus cartones al correo.";
+        formulario.reset();
+        document.querySelectorAll('.option-box').forEach(el => el.classList.remove('selected'));
+      } catch (err) {
+        mensaje.style.color = "#721c24";
+        mensaje.style.backgroundColor = "#f8d7da";
+        mensaje.style.border = "1px solid #f5c6cb";
+        mensaje.style.padding = "10px";
+        mensaje.style.borderRadius = "5px";
+        mensaje.innerText = "❌ Ocurrió un error al enviar tu reserva. Intenta nuevamente.";
+      }
     });
 
-    let vendidos = 0;
-    const total = 100;
-    function actualizarProgreso() {
-      vendidos += 1;
-      if (vendidos > total) vendidos = total;
-      const porcentaje = Math.round((vendidos / total) * 100);
-      const barra = document.getElementById("barra-progreso");
-      barra.style.width = porcentaje + "%";
-      barra.textContent = porcentaje + "%";
-      if (vendidos >= total) {
-        document.querySelector("form button").disabled = true;
-        alert("Ya se alcanzó el límite de cartones vendidos.");
-      }
-    }
+    fetch('https://bingos-dany-backend-nuevo-production.up.railway.app/contador')
+      .then(res => res.json())
+      .then(data => {
+        const total = 300;
+        const porcentaje = ((data.total / total) * 100).toFixed(1);
+        document.getElementById('stats').innerHTML =
+          `🧾 Cartones reservados: <strong>${data.total}</strong> de <strong>${total}</strong><br>
+           📊 Porcentaje vendido: <strong>${porcentaje}%</strong>`;
+        const bar = document.getElementById("progressBar");
+        bar.style.width = `${porcentaje}%`;
+        bar.innerText = `${porcentaje}%`;
+      })
+      .catch(err => {
+        document.getElementById('stats').innerHTML = "No se pudo cargar el estado de reservas.";
+      });
   </script>
-
 </body>
 </html>
