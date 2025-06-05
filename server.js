@@ -28,7 +28,7 @@ const upload = multer({ dest: 'uploads/' });
 
 // Ruta para procesar el formulario
 app.post('/reservar', upload.single('comprobante'), async (req, res) => {
-  const { nombre, correo, cantidad } = req.body;
+  const { nombre, correo, cantidad, tipo } = req.body;
   const comprobante = req.file;
 
   if (!nombre || !correo || !comprobante) {
@@ -40,6 +40,7 @@ app.post('/reservar', upload.single('comprobante'), async (req, res) => {
       nombre,
       correo,
       cantidad,
+      tipo,
       comprobante: comprobante.filename
     });
 
@@ -62,7 +63,7 @@ app.get('/reservas', async (req, res) => {
   }
 });
 
-// 📌 Ruta para validar y enviar cartones
+// 📌 Ruta para validar y enviar cartones por correo
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -109,8 +110,16 @@ app.post('/validar/:id', async (req, res) => {
   }
 });
 
-
-// Ruta para ver el porcentaje de cartones vendidos
+// ✅ Ruta pública para contar reservas totales (usada para la barra de porcentaje)
+app.get('/contador', async (req, res) => {
+  try {
+    const total = await Reserva.countDocuments();
+    res.status(200).json({ total });
+  } catch (error) {
+    console.error('Error al contar reservas:', error);
+    res.status(500).json({ mensaje: 'Error al obtener el contador' });
+  }
+});
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
